@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 set -Eeuo pipefail
 IFS=$'\n\t'
-VERSION="2.0.1"
+VERSION="2.0.2"
 APP="inmuX"
 OUTDIR="${HOME}/inmuX-results"
 TIMEOUT=15
@@ -25,6 +25,10 @@ banner() {
               S O L I T A I R E   H A C K
                          ⚡ inmuX ⚡
                RECON • NETWORK • SECURITY
+
+        ────────────────────────────────────────
+          Created with assistance from ChatGPT Mobile
+        ────────────────────────────────────────
 ASCII
   printf '%s╔══════════════════════════════════════════════╗%s\n' "$RED" "$RESET"
   printf '%s║             inmuX v%-26s║%s\n' "$RED" "$VERSION" "$RESET"
