@@ -3,7 +3,7 @@ set -Eeuo pipefail
 IFS=$'\n\t'
 umask 077
 
-readonly VERSION="2.0.3"
+readonly VERSION="2.0.4"
 readonly APP="inmuX"
 readonly OUTDIR="${HOME}/inmuX-results"
 readonly TIMEOUT=15
@@ -59,7 +59,6 @@ install_deps() {
   sleep 1
 }
 
-# Host-only validation for DNS/WHOIS/Nmap. Rejects option injection and unsafe characters.
 safe_host() {
   local target="$1"
   [[ -n "$target" ]] || return 1
@@ -70,14 +69,20 @@ safe_host() {
   [[ "$target" =~ ^[A-Za-z0-9][A-Za-z0-9._:-]{0,252}$ ]] || return 1
 }
 
-# URL validation for HTTP-only features. No credentials, fragments, query tricks or non-HTTP schemes.
 safe_url() {
   local url="$1"
   [[ "$url" == http://* || "$url" == https://* ]] || return 1
   [[ "$url" != *[[:space:]]* ]] || return 1
   [[ "$url" != *$'\n'* && "$url" != *$'\r'* ]] || return 1
   [[ "$url" != *'@'* ]] || return 1
-  [[ "$url" =~ ^https?://[A-Za-z0-9.-]+(:[0-9]{1,5})?([/?#][A-Za-z0-9._~:/?#\[\]@!$&'\''()*+,;=%-]*)?$ ]] || return 1
+  case "$url" in
+    http://*|https://*) ;;
+    *) return 1 ;;
+  esac
+  local rest="${url#*://}"
+  [[ -n "$rest" ]] || return 1
+  [[ "$rest" != /* ]] || return 1
+  [[ "$rest" != *'\\'* ]] || return 1
 }
 
 ask_host() {
@@ -111,7 +116,7 @@ new_report() {
   REPORT="$OUTDIR/${stamp}_${safe}_${1}.txt"
   {
     printf 'inmuX v%s\nTarget: %s\nDate: %s\n' "$VERSION" "$TARGET" "$(date -Is)"
-    printf '----------------------------------------\n\n'
+    printf '%s\n\n' '----------------------------------------'
   } > "$REPORT"
   chmod 600 "$REPORT"
 }
