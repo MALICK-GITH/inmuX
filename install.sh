@@ -30,7 +30,6 @@ fi
 
 [[ -f "$ENTRYPOINT" ]] || fail "Missing $ENTRYPOINT after installation."
 chmod 700 "$ENTRYPOINT"
-
 mkdir -p "$HOME/inmuX-results"
 chmod 700 "$HOME/inmuX-results"
 
