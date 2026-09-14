@@ -2,34 +2,25 @@
 set -Eeuo pipefail
 IFS=$'\n\t'
 
-SCRIPT="${1:-$PWD/inmuX.sh}"
+SCRIPT="${1:-$HOME/inmuX/inmuX.sh}"
 
 if [[ ! -f "$SCRIPT" ]]; then
-  printf '[!] inmuX.sh not found: %s\n' "$SCRIPT"
+  printf '[inmuX] File not found: %s\n' "$SCRIPT" >&2
   exit 1
 fi
 
-cp -- "$SCRIPT" "$SCRIPT.bak"
+command -v bash >/dev/null 2>&1 || { printf '[inmuX] bash is required.\n' >&2; exit 1; }
 
-awk '
-{
-  if ($0 ~ /\[\[ "\$url" =~ \^https\?:\/\//) {
-    print "  [[ \"$url\" =~ ^https?://[A-Za-z0-9.-]+(:[0-9]{1,5})?([/?#][A-Za-z0-9._~:/?#\\[\\]@!$&()*+,;=%-]*)?$ ]] || return 1"
-    next
-  }
-  print
-}
-' "$SCRIPT.bak" > "$SCRIPT"
-
-chmod +x "$SCRIPT"
-
+printf '[inmuX] Checking syntax: %s\n' "$SCRIPT"
 if bash -n "$SCRIPT"; then
-  rm -f -- "$SCRIPT.bak"
-  printf '[✓] Syntax fixed successfully.\n'
-  printf '[✓] File: %s\n' "$SCRIPT"
-  printf '[✓] Run: inmux\n'
+  printf '[✓] Syntax OK. No changes were necessary.\n'
 else
-  mv -f -- "$SCRIPT.bak" "$SCRIPT"
-  printf '[!] Syntax check still fails. Original file restored.\n'
-  exit 1
+  printf '[!] Syntax errors found. The file was NOT modified.\n' >&2
+  exit 2
+fi
+
+if grep -qF "RED=$'\\033[31;1m'" "$SCRIPT"; then
+  printf '[✓] ANSI color definitions use real ESC sequences.\n'
+else
+  printf '[!] ANSI color definitions may still need review.\n'
 fi
