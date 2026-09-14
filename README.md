@@ -4,32 +4,24 @@
 
 > For authorized security testing, diagnostics and learning only.
 
-## Current version
+## Version
 
 `2.0.5`
 
 ## Features
 
-### Recon & discovery
-- DNS lookup
-- Reverse DNS
-- WHOIS
+- DNS Lookup / Reverse DNS / WHOIS
 - GeoIP metadata
-- Host/subdomain discovery
-
-### Network & web
-- HTTP response/security headers
+- Host and subdomain discovery
+- HTTP security headers
 - Host + DNS information
 - Nmap service scan (top 100 open ports)
 - Subnet lookup
 - DNS zone-transfer (AXFR) check
 - Link extraction
+- Local report management
 
-### Reports
-- Reports are saved locally in `~/inmuX-results`
-- Directory permissions: `700`
-- Report permissions: `600`
-- View, delete one, or delete all reports with explicit confirmation
+Reports are stored in `~/inmuX-results` with restrictive permissions (`700` directory, `600` files).
 
 ## Install
 
@@ -40,7 +32,7 @@ pkg install -y git
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/MALICK-GITH/inmuX/main/install.sh)"
 ```
 
-Or clone manually:
+Manual installation:
 
 ```bash
 git clone https://github.com/MALICK-GITH/inmuX.git ~/inmuX
@@ -51,8 +43,6 @@ chmod 700 inmuX.sh
 
 ## Update
 
-For an existing installation:
-
 ```bash
 cd ~/inmuX
 git pull --ff-only origin main
@@ -62,51 +52,33 @@ chmod 700 inmuX.sh install.sh fix_syntax.sh
 
 ## Dependencies
 
-The installer provides the recommended Termux packages:
-
-`bash curl dnsutils whois nmap grep sed coreutils findutils git`
+The installer provides: `git bash curl dnsutils whois nmap grep sed coreutils findutils`.
 
 You can also use menu option **97 — Install/Update Dependencies**.
 
 ## Syntax check
 
-The checker is non-destructive:
-
 ```bash
 bash ~/inmuX/fix_syntax.sh
 ```
 
-Or provide another script:
+The checker is non-destructive: it reports syntax problems but does not rewrite the script.
 
-```bash
-bash ~/inmuX/fix_syntax.sh /path/to/script.sh
-```
+## Security
 
-## Security notes
-
-- Host and URL inputs are validated before network commands.
-- User-controlled values are passed as arguments instead of being interpolated into shell commands where possible.
-- API query parameters are URL-encoded.
-- Nmap and AXFR operations require explicit confirmation.
-- Reports are stored with restrictive permissions.
-- Do not use the tool against systems, domains or networks without authorization.
+- Strict host and URL validation.
+- User-controlled values are passed as arguments rather than shell-interpolated commands where possible.
+- API parameters are URL-encoded.
+- Nmap and AXFR require explicit confirmation.
+- Local reports use restrictive permissions.
+- Use inmuX only on systems and networks you own or are authorized to assess.
 
 ## Troubleshooting
 
-### Colors appear as `\\033[...m`
+If you previously saw literal strings such as `\\033[31;1m`, update to `v2.0.5`. ANSI color variables now use Bash `$'...'` strings, producing real terminal escape sequences.
 
-Update to `v2.0.5`. The ANSI variables now use Bash `$'...'` strings so Termux receives real escape characters.
+If a dependency is missing, run option `97` or install it with `pkg install <package>`.
 
-### A dependency is missing
-
-Run menu option `97`, or install the package manually with `pkg install <package>`.
-
-### A network API fails
-
-Some features depend on external services and can fail because of DNS, connectivity, rate limits or service availability. The command result is preserved in the local report when possible.
-
-## Project
-
-Repository: https://github.com/MALICK-GITH/inmuX
+Some online features depend on external services and can fail because of connectivity, DNS, rate limits or service availability; command output is kept in the report when possible.
 
 **SOLITAIRE HACK — RECON • NETWORK • SECURITY**
