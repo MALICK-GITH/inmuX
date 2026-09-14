@@ -8,7 +8,7 @@ readonly APP="inmuX"
 readonly OUTDIR="${HOME}/inmuX-results"
 readonly TIMEOUT=15
 
-# ANSI colors: use $'...' so Termux receives real ESC bytes, not literal \\033 text.
+# ANSI colors: $'...' produces real ESC bytes in Termux.
 if [[ -t 1 && -t 0 ]]; then
   BOLD=$'\033[1m'; DIM=$'\033[2m'; GREEN=$'\033[32;1m'; YELLOW=$'\033[33;1m'
   BLUE=$'\033[34;1m'; RED=$'\033[31;1m'; CYAN=$'\033[36;1m'; MAGENTA=$'\033[35;1m'; RESET=$'\033[0m'
@@ -322,7 +322,6 @@ EOF
 }
 
 main() {
-  banner
   need_cmd bash || exit 1
   menu
 }
